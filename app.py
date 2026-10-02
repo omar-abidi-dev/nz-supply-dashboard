@@ -13,7 +13,7 @@ import metrics  # noqa: E402
 st.set_page_config(page_title="NZ Supply Chain Risk", page_icon="🚢", layout="wide")
 
 
-@st.cache_data
+@st.cache_resource
 def get_data() -> pd.DataFrame:
     return metrics.load_data()
 
@@ -127,10 +127,10 @@ with tab_risk:
         )
 
         st.subheader("Drill down into one product group")
-        options = risk["hs4"] + " – " + risk["product"]
+        options = risk["hs4"].astype(str) + " – " + risk["product"].astype(str)
         choice = st.selectbox("Product group", options)
         code = choice.split(" – ")[0]
-        sub = df[df["hs4"] == code]
+        sub = df[df["hs4"].astype(str) == code]
         by_country = metrics.top_countries(sub, 10)
         fig = px.pie(by_country, names="country", values=metrics.VALUE,
                      title=f"Suppliers of {choice}", hole=0.4)

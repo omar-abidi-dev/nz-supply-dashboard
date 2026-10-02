@@ -7,15 +7,20 @@ from statsmodels.tsa.holtwinters import ExponentialSmoothing
 
 ROOT = Path(__file__).resolve().parents[1]
 CLEAN_FILE = ROOT / "data" / "clean" / "imports.parquet"
+APP_FILE = ROOT / "data" / "clean" / "app_data.parquet"
 
 VALUE = "value_cif_nzd"
 
 
-def load_data(path: Path = CLEAN_FILE) -> pd.DataFrame:
+def load_data(path: Path | None = None) -> pd.DataFrame:
+    """Load the small app dataset if it exists, otherwise the full cleaned data."""
+    if path is None:
+        path = APP_FILE if APP_FILE.exists() else CLEAN_FILE
     df = pd.read_parquet(path)
-    df["hs4"] = df["hs"].str[:4]
-    # Short product label, e.g. "Horses; live, pure-bred..." -> "Horses"
-    df["product"] = df["hs_desc"].str.split(";").str[0].str.strip()
+    if "hs4" not in df.columns:  # full dataset: derive the extra columns
+        df["hs4"] = df["hs"].str[:4]
+        # Short product label, e.g. "Horses; live, pure-bred..." -> "Horses"
+        df["product"] = df["hs_desc"].str.split(";").str[0].str.strip()
     return df
 
 
@@ -70,8 +75,14 @@ def concentration(df, level: str = "hs4", min_value: float = 50e6) -> pd.DataFra
     (sum of squared supplier shares, 0 = spread out, 1 = one supplier).
     Only groups with total imports >= min_value NZD are kept.
     """
+
+    
     by = df.groupby([level, "country"], observed=True)[VALUE].sum().reset_index()
     by = by[by[VALUE] > 0]
+
+    by[level] = by[level].astype(str)
+    by["country"] = by["country"].astype(str)
+    
     total = by.groupby(level)[VALUE].transform("sum")
     by["share"] = by[VALUE] / total
 
@@ -85,9 +96,9 @@ def concentration(df, level: str = "hs4", min_value: float = 50e6) -> pd.DataFra
                    .rename(columns={"country": "top_country", "share": "top_share"}))
 
     if level == "hs4":
-        labels = df.groupby("hs4")["product"].agg(lambda s: s.mode().iat[0])
-        sections = df.groupby("hs4")["section"].first()
-        out = out.join(labels).join(sections)
+        info = (df[["hs4", "product", "section"]].astype(str)
+        .drop_duplicates("hs4").set_index("hs4"))
+        out = out.join(info)
 
     out["risk"] = np.select(
         [(out["hhi"] > 0.25) | (out["top_share"] > 0.6), out["hhi"] > 0.15],
