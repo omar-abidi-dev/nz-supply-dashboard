@@ -1,6 +1,6 @@
 # 🇳🇿 NZ Imports & Supply Chain Risk Dashboard
 
-**Live app:** (https://nz-supply-dashboard-xhy2xxbncrktkyyezvdvbi.streamlit.app)
+**Live app:** [YOUR LINK]
 
 An interactive dashboard that analyses New Zealand's imports (2023–2025, NZD 243.6B)
 and identifies **products where NZ depends heavily on a single supplier country**.
@@ -45,4 +45,4 @@ Python · pandas · Plotly · Streamlit · statsmodels · Git
 [Stats NZ – Overseas Merchandise Trade](https://www.stats.govt.nz/large-datasets/csv-files-for-download/overseas-merchandise-trade-datasets/),
 CIF values in NZD, CC BY 4.0.
 
-*Built by Omar Abidi – Computer Science student, Telkom University.*
+*Built by Omar [Last name] – Informatics student, Telkom University.*
