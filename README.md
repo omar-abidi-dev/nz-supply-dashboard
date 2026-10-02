@@ -17,8 +17,8 @@ so a supply chain team can see where a disruption would hurt most.
    aluminium production depends almost entirely on one country.
 2. **Cereals – 100% from Australia (NZD 988M).**
 3. **Vegetable oils – 92% from Malaysia (NZD 173M).**
-4. [Big red dot #1 from the scatter chart: product, share, value]
-5. China supplies 21.5% of all NZ imports – twice the next country.
+4. **[Big red dot #1 from the scatter chart**: product, share, value]
+5. **China supplies 21.5% of all NZ imports** – twice the next country.
 
 > Note: concentration measures *exposure*, not likelihood of disruption.
 > Australia is a close, stable partner; the value is in knowing where to look.
